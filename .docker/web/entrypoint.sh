@@ -5,6 +5,9 @@ run_service()
     /etc/init.d/$1 start || exit 1
 }
 
+# Ensure /var/www has correct ownership for git operations
+chown -R gazelle:gazelle /var/www
+
 # We'll need these anyway so why not kill some time while waiting on MySQL to be ready
 su -c 'echo "====== Composer Install ======"; \
     composer --version; \
@@ -32,11 +35,11 @@ if ! FKEY_MY_DATABASE=1 LOCK_MY_DATABASE=1 /var/www/vendor/bin/phinx migrate; th
     exit 1
 fi
 
-if [ ! -f /etc/php/7.4/cli/conf.d/99-boris.ini ]; then
+if [ ! -f /etc/php/8.4/cli/conf.d/99-boris.ini ]; then
     echo "Initialize Boris..."
-    grep '^disable_functions' /etc/php/7.4/cli/php.ini \
+    grep '^disable_functions' /etc/php/8.4/cli/php.ini \
         | sed -r 's/pcntl_(fork|signal|signal_dispatch|waitpid),//g' \
-        > /etc/php/7.4/cli/conf.d/99-boris.ini
+        > /etc/php/8.4/cli/conf.d/99-boris.ini
 fi
 
 echo "Start services..."
@@ -49,7 +52,7 @@ truncate -s0  /var/www/logs/*.log
 
 run_service cron
 run_service nginx
-run_service php7.4-fpm
+run_service php8.4-fpm
 
 crontab /var/www/.docker/web/crontab
 

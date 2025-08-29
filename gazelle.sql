@@ -1397,6 +1397,10 @@ CREATE TABLE `movie_info_cache` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+
+
+
+
 --
 -- Table structure for table `new_info_hashes`
 --

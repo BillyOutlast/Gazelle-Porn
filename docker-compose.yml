@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   web:
     build: .
@@ -15,40 +13,40 @@ services:
     volumes:
       - .:/var/www:delegated
       - .docker/web/nginx.conf:/etc/nginx/sites-enabled/gazelle.conf
-      - .docker/web/www.conf:/etc/php/7.4/fpm/pool.d/www.conf
+      - .docker/web/www.conf:/etc/php/8.4/fpm/pool.d/www.conf
     environment:
       # These should match what you set for your mysql container below
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
   memcached:
-    image: memcached:1.5-alpine
+    image: memcached:latest
     container_name: gpw-memcached
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: gpw-phpmyadmin
     environment:
-      - PMA_HOST=mysql
-      - PMA_USER=gazelle
-      - PMA_PASSWORD=password
+      - PMA_HOST=${PMA_HOST}
+      - PMA_USER=${PMA_USER}
+      - PMA_PASSWORD=${PMA_PASSWORD}
     depends_on:
       - mysql
     ports:
       - 9001:80
   mysql:
-    image: mariadb:10.3
+    image: mariadb:latest
     container_name: gpw-mysql
     ports:
       - 36000:3306
     volumes:
-      - ./.docker/mysql/mysqld_sql_mode.cnf:/etc/mysql/conf.d/mysqld_sql_mode.cnf:delegated
+      - ./.docker/mysql/mysqld_sql_mode.cnf:/etc/mysql/conf.d/mysqld_sql_mode.cnf:ro
       - mysql-data:/var/lib/mysql
       - ./gazelle.sql:/docker-entrypoint-initdb.d/gazelle.sql:ro
     environment:
-      - MYSQL_DATABASE=gazelle
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=em%G9Lrey4^N
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
   manticoresearch:
     build: ./.docker/manticore
@@ -62,8 +60,8 @@ services:
       - ./.docker/manticore/manticore.conf:/var/lib/manticore/conf/manticore.conf
     environment:
       # These should match what you set for your mysql container above
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
 volumes:
   mysql-data:

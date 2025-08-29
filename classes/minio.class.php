@@ -2,7 +2,7 @@
 
 use Aws\CommandPool;
 use Aws\S3\S3Client;
-use Guzzle\Service\Exception\CommandTransferException;
+use Aws\Exception\AwsException;
 
 class Minio implements ImageStorage {
     private $s3;
@@ -56,15 +56,15 @@ class Minio implements ImageStorage {
                 if ($Result instanceof \Aws\Result) {
                     $ret[] = $this->image_path($Datas[$Idx]['Name']);
                 } else {
-                    if ($Result->getStatusCode() != 200) {
-                        throw new Exception("Upload failed, status code: " . $Result->getStatusCode() . " message: " . $Result->getAwsErrorMessage());
+                    if (method_exists($Result, 'getStatusCode') && $Result->getStatusCode() != 200) {
+                        throw new Exception("Upload failed, status code: " . $Result->getStatusCode() . " message: " . (method_exists($Result, 'getAwsErrorMessage') ? $Result->getAwsErrorMessage() : 'Unknown error'));
                     }
                 }
             }
-        } catch (CommandTransferException $e) {
-            foreach ($e->getFailedCommands() as $failedCommand) {
-                throw new Exception($e->getExceptionForFailedCommand($failedCommand)->getMessage());
-            }
+        } catch (\Aws\Exception\AwsException $e) {
+            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
         return $ret;
     }

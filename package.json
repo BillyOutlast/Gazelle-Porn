@@ -32,7 +32,19 @@
     "preact": "^10.6.4",
     "prop-types": "^15.8.1",
     "react-resize-detector": "^7.1.2",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup": "^4.0.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "typescript": "^5.4.0",
+    "postcss": "^8.4.32",
+    "remark-parse": "^10.0.0",
+    "unified": "^10.1.2",
+    "mdast-util-gfm-table": "^1.0.1",
+    "micromark": "^3.0.5",
+    "micromark-extension-gfm-table": "^1.0.3"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.1.2",

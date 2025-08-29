@@ -1,9 +1,11 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 RUN apt update
 RUN apt install -y wget cron curl mariadb-client gnupg
 RUN wget https://repo.manticoresearch.com/manticore-repo.noarch.deb
 RUN dpkg -i manticore-repo.noarch.deb
+# Fix Manticore repo sources to use bullseye instead of buster
+RUN sed -i 's/buster/bullseye/g' /etc/apt/sources.list.d/manticoresearch.list
 RUN apt update
 RUN apt install -y manticore=5.0.2-220530-348514c86 manticore-server=5.0.2-220530-348514c86 manticore-tools=5.0.2-220530-348514c86 manticore-dev=5.0.2-220530-348514c86 manticore-server-core=5.0.2-220530-348514c86  manticore-common=5.0.2-220530-348514c86
 
